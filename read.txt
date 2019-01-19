@@ -1,6 +1,5 @@
-HEAD
-vladimirovith
 
+vladimirovith
 anat
 ryavkin
 
