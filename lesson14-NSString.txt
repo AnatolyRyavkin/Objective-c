@@ -1,0 +1,12 @@
+#import <Foundation/Foundation.h>
+
+int main (int argc, const char * argv[])
+{
+   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+   NSString*str = @ "The NSString class and its mutable subclass, NSMutableString, provide an extensive set of APIs for working with strings, including methods for comparing, searching, and modifying strings. NSString objects are used throughout Foundation and other Cocoa frameworks, serving as the basis for all textual and linguistic functionality on the platform.NSString is toll-free bridged with its Core Foundation counterpart, CFStringRef. See Toll-Free Bridging for more information.String ObjectsAn NSString object encodes a Unicode-compliant text string, represented as a sequence of UTF–16 code units. All lengths, character indexes, and ranges are expressed in terms of 16-bit platform-endian values, with index values starting at 0.An NSString object can be initialized from or written to a C buffer, an NSData object, or the contents of an NSURL. It can also be encoded and decoded to and from or any other string encoding represented by NSStringEncoding.NoteAn immutable string is a text string that is defined when it is created and subsequently cannot be changed. An immutable string is implemented as an array of UTF–16 code units (in other words, a text string). To create and manage an immutable string, use the NSString class. To construct and manage a string that can be changed after it has been created, use NSMutableString.";
+
+
+   NSLog (@"%@",str);
+   [pool drain];
+   return 0;
+}
