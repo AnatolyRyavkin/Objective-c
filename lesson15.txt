@@ -1,0 +1,109 @@
+//gcc 5.0.4
+
+#import <Foundation/Foundation.h>
+
+@interface NSObject (Random)
+-(float)ran: (int) n;
+@end;
+
+@implementation NSObject (Random)
+-(float)ran: (int) n{
+  static float a = 0.1;
+  a = a + 0.1;
+  float randomFloatAt0;
+  srand48(time(0));
+  randomFloatAt0 = drand48()+a;
+  float randomFloat =(float)((int)(randomFloatAt0 *1111111.333) % n);
+  //NSLog(@"%f",randomFloatAt0);
+  randomFloat = (randomFloat - randomFloatAt0 >= 0.0) ? (randomFloat - randomFloatAt0) : (-1.0*(randomFloat - randomFloatAt0));
+  return randomFloat ;
+}   
+@end;
+
+
+
+
+typedef enum{
+     math1 = 1 << 0,
+     histories1 = 1 << 1,
+     development1 = 1 << 2,
+     geography1 = 1 << 3
+} Study;
+
+@interface Student: NSObject
+{   Study study;
+    BOOL math;
+    BOOL histories;
+    BOOL development;
+    BOOL geography;
+    int num;
+}
+
+@property (assign,nonatomic) Study study;
+@property (assign,nonatomic) BOOL math;
+@property (assign,nonatomic) BOOL histories;
+@property (assign,nonatomic) BOOL development;
+@property (assign,nonatomic) BOOL geography;
+@property int num;
+-(void)setSubject: (Study) subject;
+@end;
+
+@implementation Student
+@synthesize math,histories,development,geography,study,num;
+num = 0;
+-(id)init{
+    int num = 0;
+    self = [super init];
+    self.math = ((int) [self ran:1000])%2 == 0 ? true : false;
+    self.histories = ((int) [self ran:1000])%2 == 0 ? true : false;
+    self.development = ((int) [self ran:1000])%2 == 0 ? true : false;
+    self.geography = ((int) [self ran:1000])%2 == 0 ? true : false;
+        return self;
+} 
+-(void)setSubject: (Study)subject{
+    self.math = subject & math1? true : false;
+    self.histories = subject & histories1 ? true : false;
+    self.development = subject & development1 ? true : false;
+    self.geography = subject & geography1 ? true : false;
+}   
+  
+-(NSString*) description{
+        NSString*string = [NSString stringWithFormat: @"Student %i stadies:\n"
+                                      "math = %@\n"
+                                      "histories = %@\n"
+                                      "development = %@\n"
+                                      "geograpy = %@\n",
+                                       self.num,
+                                       self.math ? @"Yes" : @"No", 
+                                       self.histories ? @"Yes" : @"No",
+                                       self.development ? @"Yes" : @"No",
+                                       self.geography ? @"Yes" : @"No"];
+    return string;
+}    
+@end;
+    
+int main (int argc, const char * argv[])
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    Student*anat = [[Student alloc]init];
+    anat.num = 1;
+    Student*andre = [[Student alloc]init];
+    andre.num = 2;
+    Student*nicon= [[Student alloc]init];
+    nicon.num = 3;
+    Student*alex= [[Student alloc]init];
+    alex.num = 4;
+    
+    [anat setSubject:math1|histories1|development1 ];
+    
+    [andre setSubject: histories1 | development1];
+    
+    NSArray*array = [NSArray arrayWithObjects:anat,andre,nicon,alex,nil];
+    
+    for(Student*student in array)
+        NSLog(@"%@",student);
+
+    NSLog (@"Hello, World!");
+    [pool drain];
+    return 0;
+}
