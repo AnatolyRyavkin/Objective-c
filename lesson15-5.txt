@@ -1,0 +1,91 @@
+#import <Foundation/Foundation.h>
+
+@interface NSObject (Random)
+-(float)ran: (int) n;
+
+@end;
+
+@implementation NSObject (Random)
+-(float)ran: (int) n{
+  static float a = 0.1;
+  a = a + 0.1;
+  float randomFloatAt0;
+  srand48(time(0));
+  randomFloatAt0 = drand48()+a;
+  float randomFloat =(float)((int)(randomFloatAt0 *1111111.333) % n);
+  //NSLog(@"%f",randomFloatAt0);
+  randomFloat = (randomFloat - randomFloatAt0 >= 0.0) ? (randomFloat - randomFloatAt0) : (-1.0*(randomFloat - randomFloatAt0));
+  return randomFloat ;
+}   
+@end;
+typedef enum{
+    StudyHistory = 1 << 0,
+    StudyMath = 1 << 1,
+    StudyDevelop = 1 << 2,
+    StudyGeography = 1 << 3 
+} StudyObject;
+
+@interface Student:NSObject
+{    StudyObject studyObject;
+     int number;
+}
+@property (assign,nonatomic) StudyObject studyObject;
+@property (assign,nonatomic) int number;
+@end;
+@implementation Student
+@synthesize studyObject,number;
+//-(NSString*)check: (StudyObject) object{
+//    NSString*str = object & StudyHistory ? @"Yes":@"No"
+//}
+static int count = 0;
+-(id)init{
+    self = [super init];
+    count ++;
+    number = count;
+    self.studyObject = ((int)[self ran:100])%2 == 0 ? self.studyObject | StudyHistory:self.studyObject;
+    self.studyObject = ((int)[self ran:100])%2 == 0 ? self.studyObject | StudyMath:self.studyObject;
+    self.studyObject = ((int)[self ran:100])%2 == 0 ? self.studyObject | StudyDevelop:self.studyObject;
+    self.studyObject = ((int)[self ran:100])%2 == 0 ? self.studyObject | StudyGeography:self.studyObject;
+    return self;
+}
+
+-(NSString*)description{
+    NSString*str = [NSString stringWithFormat: @"Student ¹ %i study:\n"
+                                          "Study History = %@\n" 
+                                          "Study Math = %@\n"
+                                          "Study Develop = %@\n"
+                                          "Study Geography = %@\n",
+                                          self.number,
+                                          self.studyObject&StudyHistory?@"Yes":@"No",
+                                          self.studyObject&StudyMath?@"Yes":@"No" ,
+                                          self.studyObject&StudyDevelop?@"Yes":@"No", 
+                                          self.studyObject&StudyGeography?@"Yes":@"No"];
+   return str;                   
+}
+
+@end;
+int main (int argc, const char * argv[])
+{
+   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+   Student*anat = [[Student alloc]init];
+   Student*alex = [[Student alloc]init];
+   Student*igor = [[Student alloc]init];
+   Student*koly = [[Student alloc]init];
+   NSArray*array = [NSArray arrayWithObjects:anat,alex,igor,koly,nil];
+   for(Student*student in array)
+   NSLog(@"%@",student);
+   
+   for(Student*student in array){
+       if(student.studyObject & StudyHistory){
+           NSLog(@"student ¹ %i choosed history\n"
+           "deleted him lessons at history",student.number);
+                student.studyObject = (student.studyObject ^ StudyHistory);
+       }
+   }
+   NSLog(@"---------------------------------------------");
+   for(Student*student in array)
+   NSLog(@"%@",student);
+   NSLog (@"hello world");
+   [pool drain];
+   return 0;
+}
