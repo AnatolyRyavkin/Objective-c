@@ -1,0 +1,29 @@
+#import <Foundation/Foundation.h>
+
+int main (int argc, const char * argv[])
+{
+   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+int num = 511;
+int i,j;
+int mask = 1;
+NSMutableString*str = [[NSMutableString alloc]init];
+for(i=30;i>=0;i--){
+       for(j=0;j<i;j++)
+               mask = mask*2;
+       if(num >= mask && mask != 1){
+           [str appendString:@"1"];
+           num = num - mask;
+       }
+       else if(mask!=1)
+          [str appendString:@"0"];
+       else if(mask == 1 && num % 2 == 0)
+            [str appendString:@"0"];
+       else 
+            [str appendString:@"1"];
+    mask = 1;
+}
+NSLog(@"%@",str);
+   NSLog (@"hello world");
+   [pool drain];
+   return 0;
+}
