@@ -1,0 +1,82 @@
+
+#import <Foundation/Foundation.h>
+@interface NSObject (Random)
++(int)ran: (int) n;
+@end;
+
+@implementation NSObject (Random)
++(int)ran: (int) n{
+  static int a = 3;
+  static int a1 =1;
+  a1 = a1+3;
+  a = a+a+113*a1;
+  int ran = (a*13)%n >= 0 ? (a*13)%n : -(a*(13))%n;
+  //NSLog(@" ran = %i",ran);
+  return ran ;
+}   
+@end;
+
+@interface Student:NSObject
+{
+   NSDate* dateOfBirth;
+   NSString* name;
+}
+@property (retain) NSDate*dateOfBirth;
+@property (retain) NSString*name;
+@end;
+
+@implementation Student
+@synthesize dateOfBirth,name;
+@end;
+
+
+
+
+
+
+
+
+
+int main (int argc, const char * argv[])
+{
+   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+   NSMutableArray*array = [[NSMutableArray alloc]init];
+   int i;
+   NSArray*arrayNames = [[NSArray alloc]initWithObjects:@"Anat",@"Alex",@"Oleg",@"Juliy",@"Kolya",nil];
+   NSArray*arraySurnames = [[NSArray alloc]initWithObjects:@"Ivanov",@"Petrov",@"Sidorov",@"Vasechkin",@"Puting",nil];
+   for(i=0;i<10;i++){
+       Student*student = [[Student alloc]init];
+       NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; 
+       dateFormatter.dateFormat = @"yyyy-MMMM-dd";
+       //student.dateOfBirth = [dateFormatter dateFromString:@"1978-05-25" ];
+       student.dateOfBirth = [dateFormatter dateFromString:
+       [NSString stringWithFormat:@"%i-%i-%i",
+                                  1978+[NSObject ran:20],
+                                  1+[NSObject ran:12],
+                                  1+[NSObject ran:28] ] ];
+       
+       
+       //student.name = [[NSString alloc] initWithFormat:@"%i",i];
+       
+       //NSLog(@"name %i  ==========  surName %i", [NSObject ran:[arrayNames count]+1] ,[NSObject ran:[arraySurnames count]+1]);
+       int countName = [NSObject ran:[arrayNames count]-1];
+       int countSurname = [NSObject ran:[arraySurnames count]-1];
+       student.name = [NSString stringWithFormat:@"%@ %@",[arrayNames objectAtIndex:countName],
+                                                          [arraySurnames objectAtIndex:countSurname]];
+       [array addObject:student];
+       NSLog(@"name student: %@"
+              "   date of birth: %@",
+              student.name,
+              [dateFormatter stringFromDate:student.dateOfBirth]);
+   }
+   
+   
+   
+   
+   
+   
+
+   NSLog (@"hello world");
+   [pool drain];
+   return 0;
+}

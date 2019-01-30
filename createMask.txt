@@ -1,0 +1,48 @@
+#import <Foundation/Foundation.h>
+@interface Bit:NSObject
+{       int effect ;
+        int target ;
+        int type;
+        int parameter;
+} 
+@property int effect;
+@property int target;
+@property int type;
+@property int parameter;
+- (void) setMask:(int) mask; 
+- (int) mask;
+@end;
+
+@implementation Bit
+@synthesize effect,target,type,parameter;
+- (void) setMask:(int)mask {
+        effect = (mask & 0xff000000)>> 24;
+        target = (mask & 0x00ff0000)>> 16;
+        type = (mask & 0x0000ff00)>> 8;
+        parameter = (mask & 0x000000ff);
+}
+
+- (int) mask {
+return (effect << 24) + (target << 16) + (type << 8) + parameter;
+}
+@end;
+
+int main (int argc, const char * argv[])
+{
+   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+   
+   Bit*bit = [[Bit alloc]init];
+   [bit setMask:0xffffffff];
+   NSLog(@"\n mask = %i \n",[bit mask]);
+   NSLog(@"\n\n  effect    = %i\n"
+          "  target    = %i\n"
+          "  type      = %i\n"
+          "  parameter = %i\n\n\n",bit.effect,bit.target,bit.type,bit.parameter);
+   
+   
+   
+   
+   NSLog (@"hello world");
+   [pool drain];
+   return 0;
+}
