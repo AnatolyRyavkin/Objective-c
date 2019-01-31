@@ -11,7 +11,6 @@
   a1 = a1+3;
   a = a+a+113*a1;
   int ran = (a*13)%n >= 0 ? (a*13)%n : -(a*(13))%n;
-  //NSLog(@" ran = %i",ran);
   return ran ;
 }   
 @end;
@@ -30,13 +29,6 @@
 @end;
 
 
-
-
-
-
-
-
-
 int main (int argc, const char * argv[])
 {
    NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
@@ -44,10 +36,12 @@ int main (int argc, const char * argv[])
    int i;
    NSArray*arrayNames = [[NSArray alloc]initWithObjects:@"Anat",@"Alex",@"Oleg",@"Juliy",@"Kolya",nil];
    NSArray*arraySurnames = [[NSArray alloc]initWithObjects:@"Ivanov",@"Petrov",@"Sidorov",@"Vasechkin",@"Puting",nil];
+   NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; 
+   dateFormatter.dateFormat = @"yyyy-MMMM-dd";
    for(i=0;i<10;i++){
        Student*student = [[Student alloc]init];
-       NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; 
-       dateFormatter.dateFormat = @"yyyy-MMMM-dd";
+       //NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; 
+       //dateFormatter.dateFormat = @"yyyy-MMMM-dd";
        //student.dateOfBirth = [dateFormatter dateFromString:@"1978-05-25" ];
        student.dateOfBirth = [dateFormatter dateFromString:
        [NSString stringWithFormat:@"%i-%i-%i",
@@ -58,17 +52,27 @@ int main (int argc, const char * argv[])
        
        //student.name = [[NSString alloc] initWithFormat:@"%i",i];
        
-       //NSLog(@"name %i  ==========  surName %i", [NSObject ran:[arrayNames count]+1] ,[NSObject ran:[arraySurnames count]+1]);
        int countName = [NSObject ran:[arrayNames count]-1];
        int countSurname = [NSObject ran:[arraySurnames count]-1];
        student.name = [NSString stringWithFormat:@"%@ %@",[arrayNames objectAtIndex:countName],
                                                           [arraySurnames objectAtIndex:countSurname]];
        [array addObject:student];
-       NSLog(@"name student: %@"
-              "   date of birth: %@",
+       /*NSLog(@"        |  name student: %@    | date of birth: %@  |\n"
+              "----------------------------------------------------------------------------------------------------------------------",
+              student.name,
+              [dateFormatter stringFromDate:student.dateOfBirth]);*/
+   }
+   [array sortUsingDescriptors:[NSArray arrayWithObjects: [[NSSortDescriptor alloc]initWithKey:@"name" ascending:YES],
+                                                          [[NSSortDescriptor alloc]initWithKey:@"dateOfBirth" ascending:YES],nil]];       
+   for(Student*student in array){
+              NSLog(@"        |  name student: %@    | date of birth: %@  |\n"
+              "----------------------------------------------------------------------------------------------------------------------",
               student.name,
               [dateFormatter stringFromDate:student.dateOfBirth]);
-   }
+    }  
+   
+   
+   
    
    
    
