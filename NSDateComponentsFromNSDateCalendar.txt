@@ -1,0 +1,20 @@
+#import <Foundation/Foundation.h>
+
+int main (int argc, const char * argv[])
+{
+   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+NSDate*date = [NSDate date];
+//NSCalendar*calendar = [[NSCalendar alloc]init]; dont init!!!!
+NSCalendar*calendar = [NSCalendar currentCalendar];
+//NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar]; es init!!!
+NSDateComponents* components = [calendar components:NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | 
+                                                    NSMinuteCalendarUnit | NSSecondCalendarUnit fromDate:date];
+NSLog(@"mont = %i\n"
+       "day = %i\n"
+       "hour = %i\n"
+       "minute = %i\n"
+       "second = %i\n"
+       ,components.month,components.day,components.hour,components.minute,components.second);                                               
+   [pool drain];
+   return 0;
+}
