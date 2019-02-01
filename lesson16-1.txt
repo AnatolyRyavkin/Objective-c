@@ -22,10 +22,14 @@
 }
 @property (retain) NSDate*dateOfBirth;
 @property (retain) NSString*name;
+-(void)timeTest;
 @end;
 
 @implementation Student
 @synthesize dateOfBirth,name;
+-(void)timeTest{
+    NSLog(@"----------------%i-------------");
+}
 @end;
 
 
@@ -62,14 +66,35 @@ int main (int argc, const char * argv[])
               student.name,
               [dateFormatter stringFromDate:student.dateOfBirth]);*/
    }
-   [array sortUsingDescriptors:[NSArray arrayWithObjects: [[NSSortDescriptor alloc]initWithKey:@"name" ascending:YES],
-                                                          [[NSSortDescriptor alloc]initWithKey:@"dateOfBirth" ascending:YES],nil]];       
+   [array sortUsingDescriptors:[NSArray arrayWithObjects: [[NSSortDescriptor alloc]initWithKey:@"dateOfBirth" ascending:YES],                                                                                   [[NSSortDescriptor alloc]initWithKey:@"name" ascending:YES],
+                                                                                       nil]];       
    for(Student*student in array){
               NSLog(@"        |  name student: %@    | date of birth: %@  |\n"
               "----------------------------------------------------------------------------------------------------------------------",
               student.name,
               [dateFormatter stringFromDate:student.dateOfBirth]);
     }  
+   NSDate*youngestStudentDateBirth = [[array objectAtIndex:([array count]-1)] dateOfBirth];
+   NSDate*oldestStudentDateBirth = [[array objectAtIndex:0] dateOfBirth];
+    NSLog(@"     oldest student date of birth:    %@    ",
+              [dateFormatter stringFromDate:oldestStudentDateBirth]);
+              
+   NSLog(@"     youngest student date of birth:    %@    ",
+              [dateFormatter stringFromDate:youngestStudentDateBirth]);
+   
+   
+   NSCalendar*calendar = [NSCalendar currentCalendar];
+   NSDateComponents* components = [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | 
+                                                       NSMinuteCalendarUnit | NSSecondCalendarUnit fromDate:youngestStudentDateBirth 
+                                                                                                     toDate:oldestStudentDateBirth
+                                                                                                     options:0];
+   NSLog(@"mont = %i\n"
+          "day = %i\n"
+          "hour = %i\n"
+          "minute = %i\n"
+          "second = %i\n"
+          "year = %i\n"
+       ,components.month,components.day,components.hour,components.minute,components.second,components.year);   
    
    
    
@@ -77,7 +102,13 @@ int main (int argc, const char * argv[])
    
    
    
-   
+   Student*student1 = [[Student alloc]init];
+   //NSTimer*timer = 
+   [[NSTimer scheduledTimerWithTimeInterval:0.01 target:student1 selector:@selector(timeTest) 
+                                                                userInfo:nil repeats:NO] fire];
+   //[timer setFireDate:[NSDate date]];
+   //[timer fire];
+
    
 
    NSLog (@"hello world");
