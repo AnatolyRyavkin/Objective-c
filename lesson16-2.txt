@@ -1,0 +1,45 @@
+
+/*13. Выведите на экран день недели, для каждого первого дня каждого месяца в текущем году (от начала до конца)
+14. Выведите дату (число и месяц) для каждого воскресенья в текущем году (от начала до конца)
+15. Выведите количество рабочих дней для каждого месяца в текущем году (от начала до конца)*/
+#import <Foundation/Foundation.h>
+int main (int argc, const char * argv[])
+{
+   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+1//   
+NSDateFormatter*formatter = [[NSDateFormatter alloc]init];
+formatter.dateFormat = @"YYYY/M/dd";
+int mont ;
+for(mont=1;mont<=12;mont++){
+
+/*for 14. - 15. exersice nessasary:
+  в этом цикле найти сколько дней в данном месяце,
+  запустить цикл дней в месяцеб
+  проверить на выходные дни - если false то добавить в копилку рабочих - (BOOL)isDateInWeekend:(NSDate *)date;
+  проверить на воскресеньt если да то вывести NSDateComponents* components = [calendar components:NSWeekdayCalendarUnit fromDate:dateStart];
+                                                                components.weekday==7*/
+
+NSString*string = [NSString stringWithFormat:@"2019/%i/01",mont];
+NSDate*dateStart =[formatter dateFromString:string];
+//NSLog(@"date: %@",[formatter stringFromDate:dateStart]);
+NSCalendar*calendar = [NSCalendar currentCalendar];
+NSDateComponents* components = [calendar components:NSWeekdayCalendarUnit fromDate:dateStart];
+NSLog(@"mont %i first weekday:  %i",mont,components.weekday);
+}
+//2
+NSDateFormatter*formatter = [[NSDateFormatter alloc]init];
+formatter.dateFormat = @"YYYY/M/dd";
+int mont ;
+for(mont=1;mont<=12;mont++){
+NSString*string = [NSString stringWithFormat:@"2019/%i/01",mont];
+NSDate*dateStart =[formatter dateFromString:string];
+//NSLog(@"date: %@",[formatter stringFromDate:dateStart]);
+NSCalendar*calendar = [NSCalendar currentCalendar];
+NSDateComponents* components = [calendar components:NSWeekdayCalendarUnit fromDate:dateStart];
+NSLog(@"mont %i first weekday:  %i",mont,components.weekday);
+}
+
+  NSLog (@"hello world");
+   [pool drain];
+   return 0;
+}
