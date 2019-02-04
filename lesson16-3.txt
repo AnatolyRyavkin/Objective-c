@@ -1,0 +1,38 @@
+/*13. Выведите на экран день недели, для каждого первого дня каждого месяца в текущем году (от начала до конца)
+14. Выведите дату (число и месяц) для каждого воскресенья в текущем году (от начала до конца)
+15. Выведите количество рабочих дней для каждого месяца в текущем году (от начала до конца)*/
+#import <Foundation/Foundation.h>
+
+
+int main (int argc, const char * argv[])
+{
+   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+   
+NSDate*date = [NSDate date];
+NSDateFormatter*formatter = [[NSDateFormatter alloc]init];
+formatter.dateFormat = @"YYYY";
+int year = [formatter stringFromDate:date].intValue;
+NSDateFormatter*formatter1 = [[NSDateFormatter alloc]init];
+formatter1.dateFormat = @"YYYY/MM/dd";
+NSString*string = [NSString stringWithFormat:@"%i/1/01",year];
+NSDate*dateStart =[formatter1 dateFromString:string];
+//NSLog(@"dateStart: %@",[formatter1 stringFromDate:dateStart]);
+NSCalendar*calendar = [NSCalendar currentCalendar];
+//NSCalendar*calendar = [[NSCalendar alloc]initWithCalendarIdentifier:@"NSCalendarIdentifierGregorian"];
+
+int countWeekDay = 0;
+while(([formatter stringFromDate:dateStart].intValue) == year){
+
+NSDateComponents* components = [calendar components:NSWeekdayCalendarUnit|NSDayCalendarUnit|NSMonthCalendarUnit fromDate:dateStart];
+NSDateComponents* components1 = [[NSDateComponents alloc]init]; 
+components1.day = 1;
+if(components.day == 1) NSLog(@"first day in month %i year %i is weekday:%i",components.month,year,components.weekday);
+if(components.weekday == 1) NSLog(@"sanday date: %@",[formatter1 stringFromDate:dateStart]);
+if(components.weekday != 1 && components.weekday != 6) countWeekDay++;
+dateStart = [calendar dateByAddingComponents:components1 toDate:dateStart options:0];
+}
+
+  NSLog (@"count weekdays = %i",countWeekDay);
+   [pool drain];
+   return 0;
+}
