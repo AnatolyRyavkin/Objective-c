@@ -17,7 +17,11 @@ formatter1.dateFormat = @"YYYY/MM/dd";
 NSString*string = [NSString stringWithFormat:@"%i/1/01",year];
 NSDate*dateStart =[formatter1 dateFromString:string];
 //NSLog(@"dateStart: %@",[formatter1 stringFromDate:dateStart]);
-NSCalendar*calendar = [NSCalendar currentCalendar];
+NSCalendar*calendar =[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];// [NSCalendar currentCalendar];
+//NSCalendar *cal = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+//cal.firstWeekday = 2;// set first week day to Monday
+calendar.firstWeekday = 2;
+calendar.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"RU"];
 //NSCalendar*calendar = [[NSCalendar alloc]initWithCalendarIdentifier:@"NSCalendarIdentifierGregorian"];
 
 int countWeekDay = 0;
@@ -26,7 +30,12 @@ while(([formatter stringFromDate:dateStart].intValue) == year){
 NSDateComponents* components = [calendar components:NSWeekdayCalendarUnit|NSDayCalendarUnit|NSMonthCalendarUnit fromDate:dateStart];
 NSDateComponents* components1 = [[NSDateComponents alloc]init]; 
 components1.day = 1;
-if(components.day == 1) NSLog(@"first day in month %i year %i is weekday:%i",components.month,year,components.weekday);
+if(components.day == 1) {
+                        NSDateFormatter *weekdayDateFormatter = [[NSDateFormatter alloc] init];
+                        [weekdayDateFormatter setDateFormat: @"EEEE"];
+                        NSLog(@"first day in month ¹ %i year: %i is   ¹ day of week : %i -----> %@",components.month,year,components.weekday,
+                                            [weekdayDateFormatter stringFromDate:dateStart]);// American week!!!!!!! 1-sanday!!!!!
+}                        
 if(components.weekday == 1) NSLog(@"sanday date: %@",[formatter1 stringFromDate:dateStart]);
 if(components.weekday != 1 && components.weekday != 6) countWeekDay++;
 dateStart = [calendar dateByAddingComponents:components1 toDate:dateStart options:0];
