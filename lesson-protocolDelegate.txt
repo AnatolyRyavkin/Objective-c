@@ -1,0 +1,60 @@
+#import <Foundation/Foundation.h>
+@protocol ProtocolDelegate <NSObject>
+@property (retain) NSString*name;
+-(void)print:(int)num assessment:(NSString*)name;
+@end;
+
+@interface Student:NSObject
+{NSString* name;
+id <ProtocolDelegate> delegate;
+}
+
+@property (nonatomic, assign) id <ProtocolDelegate> delegate;
+@property (retain) NSString*name;
+
+-(void)inv:(int)num;
+@end;
+
+@implementation Student
+@synthesize name,delegate;
+-(void)inv:(int)num{
+    NSLog(@"Teacher: %@ statement for student %@ : ",delegate.name,self.name);
+    switch(num){
+          case 1: [delegate print:1 assessment:@"very badly"];break;
+          case 2: [delegate print:2 assessment :@"veri badly"];break;
+          case 3: [delegate print:3 assessment:@"badly"];break;
+          case 4: [delegate print:4 assessment:@"good"];break;
+          case 5: [delegate print:5 assessment:@"very good"];break;
+          default: NSLog(@"%i - dont this assessment",num);
+          break;
+    }
+}
+@end;
+
+@interface Teacher:NSObject <ProtocolDelegate>
+{NSString* name;}
+@property (retain) NSString*name;
+-(void)print:(int)num assessment:(NSString*)name;
+@end;
+
+@implementation Teacher
+@synthesize name;
+-(void)print:(int)num assessment:(NSString*)assessment{
+    NSLog(@"num: %i -- assessment: %@",num,assessment);
+}
+@end;
+
+int main (int argc, const char * argv[])
+{
+   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+   Teacher*teacher1 = [[Teacher alloc]init]; teacher1.name = @"Sergey Victorovich";
+   Teacher*teacher2 = [[Teacher alloc]init]; teacher2.name = @"Nikolay Ivanovich";
+   Student*student1 = [[Student alloc]init]; student1.name = @"Alex";student1.delegate = teacher1;
+   Student*student2 = [[Student alloc]init]; student2.name = @"Anat";student2.delegate = teacher2;
+   [student1 inv:4];
+   [student2 inv:1];
+   
+   NSLog (@"hello world");
+   [pool drain];
+   return 0;
+}

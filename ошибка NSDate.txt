@@ -1,0 +1,26 @@
+
+#import <Foundation/Foundation.h>
+
+int main (int argc, const char * argv[])
+{
+   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+   
+NSDateFormatter*formatter1 = [[NSDateFormatter alloc]init];
+formatter1.dateFormat = @"YYYY/MM/dd";
+NSDate*dateStart =[formatter1 dateFromString:@"1500/12/27"];
+NSCalendar*calendar = [NSCalendar currentCalendar];
+int i = 0;
+NSLog(@" date b: %@",[formatter1 stringFromDate:dateStart]);
+
+while(1==1){
+NSDateComponents* components1 = [[NSDateComponents alloc]init]; 
+components1.day = 1;
+NSLog(@" date: %@",[formatter1 stringFromDate:dateStart]);
+dateStart = [calendar dateByAddingComponents:components1 toDate:dateStart options:0];
+i++;
+if(i>5) break;
+}
+
+   [pool drain];
+   return 0;
+}
