@@ -1,0 +1,146 @@
+#import <Foundation/Foundation.h>
+
+@interface NSObject (Random)
++(int)ran: (int) n;
+@end;
+
+@implementation NSObject (Random)
++(int)ran: (int) n{
+  static int a = 3;
+  static int a1 =1;
+  a1 = a1+3;
+  a = 3*a1;
+  //  NSLog(@"a= %i",a);
+  int ran = (a)%n >= 0 ? (a)%n : -(a)%n;
+  return ran ;
+}   
+@end;
+
+typedef enum{
+    bad,
+    good,
+}EnumFeel;
+
+@class Patient;
+
+
+@protocol AttetingDelegat <NSObject>
+-(void)treatmentPatient:(Patient*)patient;
+@end;
+
+@interface Patient: NSObject
+{
+NSString* name;
+CGFloat temp;
+id <AttetingDelegat> atteting;
+}
+@property (retain, readwrite,nonatomic) NSString* name;
+@property (readwrite,retain,nonatomic) id <AttetingDelegat> atteting; 
+@property (readwrite,assign,nonatomic) CGFloat temp;
+-(EnumFeel)IFeel;
+-(void)takePill;
+-(void)makeShot;
+-(void)relax;
+@end;
+
+static int PatientNameNum;
+static int DoctorNameNum;
+
+@implementation Patient
+@synthesize name,temp,atteting;
+-(id)init{
+    self=[super init];
+    if(self){
+        self.temp = ((CGFloat)[[self class] ran:4]) + 36.4 + ((CGFloat)[[self class] ran:10])/10;
+        self.name = [NSString stringWithFormat:@"Patient ¹%i",PatientNameNum];
+    }
+    PatientNameNum++;
+    return self;
+}
+-(EnumFeel)IFeel{
+     EnumFeel ansver = [[self class] ran:1000]%2 == 0 ? good : bad ;
+     if(ansver) NSLog(@"I %@ -- feel: bad!!! | temp = %f",self.name,self.temp);
+     else {
+         self.temp = 36.6;
+         NSLog(@"I %@ feel good temp = %f",self.name,self.temp);
+     }    
+     return ansver;
+}
+-(void)takePill{
+    NSLog(@"My name is %@. I take pill.",name);
+    self.temp = ((CGFloat)[[self class] ran:2]) + 35.4 + ((CGFloat)[[self class] ran:10])/10;
+    NSLog(@"temp after pill: %f",self.temp);
+}
+-(void)makeShot{
+    NSLog(@"My name is %@. I make shot.",name);
+}
+-(void)relax{
+    NSLog(@"My name is %@. I relaxing.",name);
+}
+@end;
+
+@interface Doctor:NSObject <AttetingDelegat>
+{NSString* name;}
+@property (readwrite,retain,nonatomic) NSString*name;
+-(void)treatmentPatient: (Patient*)patient;
+@end;
+@implementation Doctor
+@synthesize name;
+-(id)init{
+    self=[super init];
+    if(self){
+        self.name = [NSString stringWithFormat:@"Doctor ¹%i",DoctorNameNum];
+    }
+    DoctorNameNum++;
+    return self;
+}
+    -(void)treatmentPatient: (Patient*)patient{
+        if([patient IFeel]){
+            if(patient.temp < 36.6) {NSLog(@"Necessary hrelax!!!");[patient relax];}
+            if(patient.temp > 36.6 && patient.temp < 38.f){
+                   NSLog(@"Necessary take pill!!!");
+                   [patient takePill];
+                    if(patient.temp > 36.6){ 
+                        NSLog(@"Pill dont helping, necessary make shot");
+                        [patient makeShot];
+                        patient.temp = 36.6;
+                        NSLog(@"%@ healthy ",patient.name);
+                        NSLog(@"I %@ says: Perfectly!!!",self.name);
+                    }    
+                    else {
+                      NSLog(@"%@ healthy ",patient.name);
+                      NSLog(@"I %@ says: Perfectly!!!",self.name);
+                    }    
+            }
+            if(patient.temp >= 38.f) {NSLog(@"Necessary make shot");[patient makeShot];}
+        }
+        else NSLog(@"I %@ says: Perfectly!!!",self.name);
+    }
+
+@end;
+
+int main (int argc, const char * argv[])
+{
+   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+   
+   int i;
+   NSMutableArray*arrayDoctors = [[NSMutableArray alloc]init];
+   NSMutableArray*arrayPatients = [[NSMutableArray alloc]init];
+   for(i=0;i<10;i++){
+       [arrayDoctors addObject:[[Doctor alloc]init]];
+       [arrayPatients addObject:[[Patient alloc]init]];
+       [[arrayPatients objectAtIndex:i] setAtteting:[arrayDoctors objectAtIndex:0]];
+   }
+   for(i=0;i<10;i++){
+       NSLog(@"-------------------------------------------------------------------------------");
+       [[arrayDoctors objectAtIndex:0] treatmentPatient:[arrayPatients objectAtIndex:i]];
+       
+   }
+   
+   
+   
+
+   NSLog (@"hello world");
+   [pool drain];
+   return 0;
+}
