@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-extern NSString* const PatientDidChangeTempNotification = @"PatientDidChangeTempNotification";
+extern NSString* const PatientDontChangeTempNotification = @"PatientDidChangeTempNotification";
 extern NSString* const PatientTempUserInfoKey = @"PatientTempUserInfoKey";
 @interface NSObject (Random)
 +(int)ran: (int) n;
@@ -44,6 +44,7 @@ id <AttetingDelegat> atteting;
 -(void)takePill;
 -(void)makeShot;
 -(void)relax;
+-(void)conciliumTempNotification:(CGFloat)temp;
 @end;
 
 static int PatientNameNum;
@@ -62,10 +63,6 @@ static int DoctorNameNum;
 }
 -(void)setTemp:(CGFloat) inTemp{
     temp = inTemp;
-    NSDictionary*dictionary = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:inTemp] forKey:PatientTempUserInfoKey];
-    [[NSNotificationCenter defaultCenter] postNotificationName:PatientDidChangeTempNotification
-                                                  object:nil
-                                                  userInfo:dictionary];
 }
 -(EnumFeel)IFeel{
      EnumFeel ansver = [[self class] ran:1000]%2 == 0 ? good : bad ;
@@ -83,6 +80,19 @@ static int DoctorNameNum;
 }
 -(void)makeShot{
     NSLog(@"My name is %@. I make shot.",name);
+    self.temp = ((CGFloat)[[self class] ran:2]) + 36.4 + ((CGFloat)[[self class] ran:10])/10;
+    NSLog(@"temp after shot: %f",self.temp);
+    if(self.temp>36.6){
+        NSLog(@"collect the Concilium");
+        [self conciliumTempNotification:self.temp];
+    }
+}
+-(void)conciliumTempNotification:(CGFloat)temp{
+    NSDictionary*dictionary = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:self.temp] forKey:PatientTempUserInfoKey];
+    [[NSNotificationCenter defaultCenter] postNotificationName:PatientDontChangeTempNotification
+                                                  object:nil
+                                                  userInfo:dictionary];
+    NSLog(@"consilium cured: patient %@ healtly!!!! temp = %f",self.name,self.temp);
 }
 -(void)relax{
     NSLog(@"My name is %@. I relaxing.",name);
@@ -93,8 +103,9 @@ static int DoctorNameNum;
 {NSString* name;}
 @property (readwrite,retain,nonatomic) NSString*name;
 -(void)treatmentPatient: (Patient*)patient;
--(void)A;
+-(void)conciliumAtTempPatient:(NSNotification*)notification;
 @end;
+
 @implementation Doctor
 @synthesize name;
 -(id)init{
@@ -114,7 +125,7 @@ static int DoctorNameNum;
                     if(patient.temp > 36.6){ 
                         NSLog(@"Pill dont helping, necessary make shot");
                         [patient makeShot];
-                        patient.temp = 36.6;
+                        //patient.temp = 36.6;
                         NSLog(@"%@ healthy ",patient.name);
                         NSLog(@"I %@ says: Perfectly!!!",self.name);
                     }    
@@ -127,8 +138,18 @@ static int DoctorNameNum;
         }
         else NSLog(@"I %@ says: Perfectly!!!",self.name);
     }
--(void)A{
-    NSLog(@"ok!");
+-(void)conciliumAtTempPatient:(NSNotification*)notification{
+    NSLog(@"I %@ here",self.name);
+    NSLog(@"I checkout temp: %@",notification.userInfo);// objectAtKey:PatientTempUserInfoKey]);
+    int i = [Doctor ran:6];
+    switch(i){
+        case 1: NSLog(@"many pill");break;
+        case 2: NSLog(@"meny shot");break;
+        case 3: NSLog(@"cut");break;
+        case 4: NSLog(@"selecting");break;
+        case 5: NSLog(@"suting");break;
+        default: NSLog(@"I dont know!");break;
+    }
 }    
 
 @end;
@@ -145,20 +166,16 @@ int main (int argc, const char * argv[])
        [arrayPatients addObject:[[Patient alloc]init]];
        [[arrayPatients objectAtIndex:i] setAtteting:[arrayDoctors objectAtIndex:0]];
        [[NSNotificationCenter defaultCenter] addObserver:[arrayDoctors objectAtIndex:i]
-                                            selector:@selector(A) 
-                                            name:PatientDidChangeTempNotification
+                                            selector:@selector(conciliumAtTempPatient:) 
+                                            name:PatientDontChangeTempNotification
                                             object:nil];
    }
-  /* for(i=0;i<10;i++){
+   for(i=0;i<10;i++){
        NSLog(@"-------------------------------------------------------------------------------");
        [[arrayDoctors objectAtIndex:0] treatmentPatient:[arrayPatients objectAtIndex:i]];
        
-   }*/
-   NSLog(@"++++++++++++++++++");
-   [[arrayPatients objectAtIndex:1] setTemp:38.0];
-   
-   
-   
+   }
+
 
    NSLog (@"hello world");
    [pool drain];
