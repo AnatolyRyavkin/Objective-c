@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
 
+extern NSString* const PatientDidChangeTempNotification = @"PatientDidChangeTempNotification";
+extern NSString* const PatientTempUserInfoKey = @"PatientTempUserInfoKey";
 @interface NSObject (Random)
 +(int)ran: (int) n;
 @end;
@@ -25,6 +27,7 @@ typedef enum{
 
 
 @protocol AttetingDelegat <NSObject>
+
 -(void)treatmentPatient:(Patient*)patient;
 @end;
 
@@ -57,6 +60,13 @@ static int DoctorNameNum;
     PatientNameNum++;
     return self;
 }
+-(void)setTemp:(CGFloat) inTemp{
+    temp = inTemp;
+    NSDictionary*dictionary = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:inTemp] forKey:PatientTempUserInfoKey];
+    [[NSNotificationCenter defaultCenter] postNotificationName:PatientDidChangeTempNotification
+                                                  object:nil
+                                                  userInfo:dictionary];
+}
 -(EnumFeel)IFeel{
      EnumFeel ansver = [[self class] ran:1000]%2 == 0 ? good : bad ;
      if(ansver) NSLog(@"I %@ -- feel: bad!!! | temp = %f",self.name,self.temp);
@@ -83,6 +93,7 @@ static int DoctorNameNum;
 {NSString* name;}
 @property (readwrite,retain,nonatomic) NSString*name;
 -(void)treatmentPatient: (Patient*)patient;
+-(void)A;
 @end;
 @implementation Doctor
 @synthesize name;
@@ -116,6 +127,9 @@ static int DoctorNameNum;
         }
         else NSLog(@"I %@ says: Perfectly!!!",self.name);
     }
+-(void)A{
+    NSLog(@"ok!");
+}    
 
 @end;
 
@@ -130,12 +144,18 @@ int main (int argc, const char * argv[])
        [arrayDoctors addObject:[[Doctor alloc]init]];
        [arrayPatients addObject:[[Patient alloc]init]];
        [[arrayPatients objectAtIndex:i] setAtteting:[arrayDoctors objectAtIndex:0]];
+       [[NSNotificationCenter defaultCenter] addObserver:[arrayDoctors objectAtIndex:i]
+                                            selector:@selector(A) 
+                                            name:PatientDidChangeTempNotification
+                                            object:nil];
    }
-   for(i=0;i<10;i++){
+  /* for(i=0;i<10;i++){
        NSLog(@"-------------------------------------------------------------------------------");
        [[arrayDoctors objectAtIndex:0] treatmentPatient:[arrayPatients objectAtIndex:i]];
        
-   }
+   }*/
+   NSLog(@"++++++++++++++++++");
+   [[arrayPatients objectAtIndex:1] setTemp:38.0];
    
    
    
