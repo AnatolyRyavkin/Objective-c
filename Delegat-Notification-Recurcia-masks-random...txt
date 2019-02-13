@@ -79,7 +79,6 @@ static int DoctorNameNum;
 -(EnumFeel)IFeel{
      NSLog(@"");
      EnumFeel ansver = ( ([[self class] ran:1000]%2 == 0) && self.temp <= 36.6) ? good : bad ;
-     NSLog(@"===%i",ansver);
      if(ansver) NSLog(@"I %@ -- feel: bad!!! | temp = %.1f",self.name,self.temp);
      else  NSLog(@"I %@ feel good temp = %.1f",self.name,self.temp);
      return ansver;
