@@ -22,8 +22,8 @@ static NSUInteger treatmentConcilium = 0;
 @end;
 
 typedef enum{
-    bad,
-    good,
+    good = 0,
+    bad = 1,
 }EnumFeel;
 typedef enum{
     Vaccination = 1 << 0,
@@ -77,25 +77,27 @@ static int DoctorNameNum;
     temp = inTemp;
 }
 -(EnumFeel)IFeel{
-     EnumFeel ansver = [[self class] ran:1000]%2 == 0 ? good : bad ;
+     NSLog(@"");
+     EnumFeel ansver = ( ([[self class] ran:1000]%2 == 0) && self.temp <= 36.6) ? good : bad ;
+     NSLog(@"===%i",ansver);
      if(ansver) NSLog(@"I %@ -- feel: bad!!! | temp = %.1f",self.name,self.temp);
-     else {
-         self.temp = 36.6;
-         NSLog(@"I %@ feel good temp = %.1f",self.name,self.temp);
-     }    
+     else  NSLog(@"I %@ feel good temp = %.1f",self.name,self.temp);
      return ansver;
 }
 -(void)takePill{
+    NSLog(@"");
     NSLog(@"My name is %@. I take pill.",name);
     self.temp = ((CGFloat)[[self class] ran:4]) + 36.0 + ((CGFloat)[[self class] ran:10])/10;
     NSLog(@"temp after pill: %.1f",self.temp);
 }
 -(void)makeShot{
+    NSLog(@"");
     NSLog(@"My name is %@. I make shot.",name);
     self.temp = ((CGFloat)[[self class] ran:3]) + 35.0 + ((CGFloat)[[self class] ran:10])/10;
     NSLog(@"temp after shot: %.1f",self.temp);
 }
 -(void)relax{
+    NSLog(@"");
     NSLog(@"My name is %@. I relaxing.",name);
 }
 @end;
@@ -105,7 +107,7 @@ static int DoctorNameNum;
 @property (readwrite,retain,nonatomic) NSString*name;
 -(void)treatmentPatient: (Patient*)patient;
 -(void)conciliumAtTempPatient:(NSNotification*)notification;
--(void)conciliumTempNotification:(CGFloat)temp;
+-(void)conciliumTempNotification:(Patient*)patient;
 @end;
 
 @implementation Doctor
@@ -125,12 +127,12 @@ static int DoctorNameNum;
                 NSLog(@"Necessary take pill!!!");
                 [patient takePill];
                     if(patient.temp >= 37.f){ 
-                        NSLog(@"Pill dont helping, necessary make shot");
+                        NSLog(@"Pill dont helping, necessary make shot\n");
                         [patient makeShot];
                         if(patient.temp>=37.0){
                             NSLog(@"Nothing helped!!!!!!");
                             NSLog(@"collect the Concilium");
-                            [self conciliumTempNotification:patient.temp];
+                            [self conciliumTempNotification:patient];
                         }
                         else {NSLog(@"go to recovery!!!");NSLog(@"I %@ says: Perfectly!",self.name);}
                         
@@ -145,8 +147,9 @@ static int DoctorNameNum;
                 [patient makeShot];
                 if(patient.temp>=37.0){
                     NSLog(@"the shot did not help");
+                    NSLog(@"");
                     NSLog(@"collect the Concilium");
-                    [self conciliumTempNotification:patient.temp];
+                    [self conciliumTempNotification:patient];
                 }
                 else {NSLog(@"go to recovery!!");NSLog(@"I %@ says : GOOD!!!",self.name);}
             }
@@ -154,14 +157,15 @@ static int DoctorNameNum;
         }
         else NSLog(@"Patient feel good!!! I %@ says: Perfectly!!!",self.name);
 }
--(void)conciliumTempNotification:(CGFloat)temp{
+-(void)conciliumTempNotification:(Patient*)patient{
     treatmentConcilium = 0;
-    NSDictionary*dictionary = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:temp] forKey:PatientTempUserInfoKey];
+    NSDictionary*dictionary = [NSDictionary dictionaryWithObject:patient forKey:PatientTempUserInfoKey];
     [[NSNotificationCenter defaultCenter] postNotificationName:PatientDontChangeTempNotification
                                                   object:nil
                                                   userInfo:dictionary];
     NSLog(@"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");                                                  
-    NSLog(@"                      intensiv terapia:");
+    NSLog(@"                      intensive terapie:");
+    NSLog(@"");
     if(treatmentConcilium & Vaccination) NSLog(@"                     Patient give vaccination ");
     if(treatmentConcilium & Operation)   NSLog(@"                     The Patient was made operation");
     if(treatmentConcilium & Dropper)     NSLog(@"                     Patient give dropper-kapelnica");
@@ -170,11 +174,21 @@ static int DoctorNameNum;
     if(treatmentConcilium & Compress)    NSLog(@"                     The Patient was made compress");
     if(treatmentConcilium & Banks)       NSLog(@"                     The Patient was made banks");
     if(treatmentConcilium & Medicine)    NSLog(@"                     Patient give medicine");
+    patient.temp = ((CGFloat)[[self class] ran:3]) + 35.0 + ((CGFloat)[[self class] ran:10])/10;
+    NSLog(@"");
+    NSLog(@"temp %@ after intensive terapie : %.1f",patient.name,patient.temp);
+    NSLog(@"");
+            if(patient.temp>=37.0){
+                            NSLog(@"Nothing helped!!!!!!");
+                            NSLog(@"Again collect the Concilium");
+                            [self conciliumTempNotification:patient];
+            }
+            else NSLog(@"finally %@ go to recovery!!!",patient.name);
 }
 -(void)conciliumAtTempPatient:(NSNotification*)notification{
     NSLog(@"");
     NSLog(@"I %@ here",self.name);
-    NSLog(@"I checkout temp: %.1f Olala!!!",[[notification.userInfo objectForKey:PatientTempUserInfoKey] floatValue]);
+    NSLog(@"I checkout temp: %.1f Olala!!!",[[notification.userInfo objectForKey:PatientTempUserInfoKey] temp]);
     
     int i = [Doctor ran:7];
     int mask = 1 << i;
