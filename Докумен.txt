@@ -8,7 +8,7 @@
   static int a1 =3;
   a1 = a1+3;
   a = a/a1;
-  //NSLog(@"a= %i",a);
+  //NSLog(@"!!!!! a = %i",a);
   int ran = (a)%n >= 0 ? (a)%n : -(a)%n;
   return ran ;
 }   
