@@ -33,7 +33,7 @@ int main (int argc, const char * argv[])
    
    Bit*bit = [[Bit alloc]init];
    [bit setMask:0xffffffff];
-   NSLog(@"\n mask = %i \n",[bit mask]);
+   NSLog(@"\n mask = %i  \n",[bit mask]);
    NSLog(@"\n\n  effect    = %i\n"
           "  target    = %i\n"
           "  type      = %i\n"
